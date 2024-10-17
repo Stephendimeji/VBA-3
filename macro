@@ -1,0 +1,743 @@
+
+Sub MultiplyIfSundayRate()
+    Dim ws3 As Worksheet
+    Dim rng14 As Range
+    Dim cell As Range
+    Dim factor As Double
+    Dim lastRow As Long
+    Dim wb As Workbook
+    Dim wx As Workbook
+    Dim wbName As String
+    Dim wxName As String
+    Dim rng As Range
+    Dim ws As Worksheet
+    Dim CL As Range
+    Dim i As Integer
+    Dim rng1 As Range
+    Dim Workrng As Range
+    Dim xhours As Variant
+    Dim xmin As Variant
+    Dim xvalue As Variant
+    Dim ML As Integer
+    Dim rng2 As Range
+    Dim sundayrng As Range
+    
+    wbName = "Rota"
+
+
+For Each wb In Application.Workbooks
+
+If wb.Name Like wbName & "*" Then
+wb.Activate
+End If
+Next
+
+ActiveSheet.Name = "PayrollExport"
+        
+    ' Set the worksheet you want to work with
+    Set ws3 = Sheets("PayrollExport") ' Change "Sheet1" to your sheet name
+    
+    ' Find the last row in column M
+    lastRow = ws3.Cells(ws3.Rows.Count, "M").End(xlUp).row
+    
+    ' Set the range for column M to check
+    Set rng14 = ws3.Range("M1:M" & lastRow)
+    
+    ' Set the multiplication factor
+    factor = 1.5 ' Change this to the desired multiplication factor
+    
+    ' Loop through each cell in the range
+    For Each cell In rng14
+        ' Check if the cell contains the text "Sunday rate"
+        If InStr(1, cell.Value, "Sunday rate (1.5x)", vbTextCompare) > 0 Then
+            ' Multiply the value in the corresponding cell in column N
+            ws3.Cells(cell.row, "N").Value = ws3.Cells(cell.row, "N").Value * factor
+        End If
+    Next cell
+    
+    Call restaurantjb
+End Sub
+
+Sub restaurantjb()
+
+Dim wb As Workbook
+Dim wx As Workbook
+Dim wbName As String
+Dim wxName As String
+Dim rng As Range
+Dim ws As Worksheet
+Dim CL As Range
+Dim i As Integer
+Dim rng1 As Range
+Dim Workrng As Range
+Dim xhours As Variant
+Dim xmin As Variant
+Dim xvalue As Variant
+Dim ML As Integer
+Dim rng2 As Range
+Dim sundayrng As Range
+Dim col As String
+Application.ScreenUpdating = False
+Application.CutCopyMode = False
+
+Set ws = ActiveSheet
+
+wxName = "Import"
+
+For Each wx In Application.Workbooks
+
+If wx.Name Like wxName & "*" Then
+wx.Activate
+Range("A2:I20").Clear
+End If
+Next
+
+wbName = "Rota"
+
+
+For Each wb In Application.Workbooks
+
+If wb.Name Like wbName & "*" Then
+wb.Activate
+End If
+Next
+
+
+
+
+'Set rng = Range("O:O")
+
+Range("A1:Y600").AutoFilter field:=13, Criteria1:="Basic pay"
+
+ws.Range("A1").CurrentRegion.SpecialCells(xlCellTypeVisible).Copy
+Dim sheet As Worksheet
+Set sheet = ActiveWorkbook.Sheets.Add(After:=ActiveWorkbook.Worksheets(ActiveWorkbook.Worksheets.Count))
+sheet.Name = "BASIC"
+Sheets("BASIC").Paste
+Worksheets("BASIC").Activate
+
+Columns(6).Insert
+i = 2
+Do While Cells(i, 3) <> ""
+Cells(i, 6) = Cells(i, 4) & " " & Cells(i, 5)
+i = i + 1
+Loop
+Range("C2").Select
+Range(Selection, Selection.End(xlDown)).Copy
+
+For Each wx In Application.Workbooks
+If wx.Name Like wxName & "*" Then
+wx.Activate
+End If
+Next
+Range("A1").End(xlDown).End(xlUp).Offset(1, 0).Select
+ActiveCell.PasteSpecial xlPasteValues
+
+
+For Each wb In Application.Workbooks
+If wb.Name Like wbName & "*" Then
+wb.Activate
+End If
+Next
+
+Range("F2").Select
+Range(Selection, Selection.End(xlDown)).Copy
+
+For Each wx In Application.Workbooks
+If wx.Name Like wxName & "*" Then
+wx.Activate
+End If
+Next
+Range("B1").End(xlDown).End(xlUp).Offset(1, 0).Select
+ActiveCell.PasteSpecial xlPasteValues
+
+
+For Each wb In Application.Workbooks
+If wb.Name Like wbName & "*" Then
+wb.Activate
+End If
+Next
+
+Range("N2").Select
+Range(Selection, Selection.End(xlDown)).Copy
+
+For Each wx In Application.Workbooks
+If wx.Name Like wxName & "*" Then
+wx.Activate
+End If
+Next
+Range("E1").End(xlDown).End(xlUp).Offset(1, 0).Select
+ActiveCell.PasteSpecial xlPasteValues
+
+For Each wb In Application.Workbooks
+If wb.Name Like wbName & "*" Then
+wb.Activate
+End If
+Next
+
+Range("O2").Select
+Range(Selection, Selection.End(xlDown)).Copy
+
+For Each wx In Application.Workbooks
+If wx.Name Like wxName & "*" Then
+wx.Activate
+End If
+Next
+Range("I1").End(xlDown).End(xlUp).Offset(1, 0).Select
+ActiveCell.PasteSpecial xlPasteFormulasAndNumberFormats
+
+Call SUNDAYRATE
+End Sub
+
+Sub SUNDAYRATE()
+Dim wb As Workbook
+Dim wx As Workbook
+Dim wbName As String
+Dim wxName As String
+Dim rng As Range
+Dim ws As Worksheet
+Dim CL As Range
+Dim i As Integer
+Dim rng1 As Range
+Dim Workrng As Range
+Dim xhours As Variant
+Dim xmin As Variant
+Dim xvalue As Variant
+
+Application.ScreenUpdating = False
+Application.CutCopyMode = False
+
+Set ws = ActiveSheet
+
+wxName = "Import"
+
+
+wbName = "Rota"
+For Each wb In Application.Workbooks
+If wb.Name Like wbName & "*" Then
+wb.Activate
+End If
+Next
+
+Worksheets("Rotaready-PayrollExport").Activate
+'Set rng = Range("O:O")
+
+Range("A1:Y600").AutoFilter field:=13, Criteria1:="Sunday rate (1.5x)"
+
+Worksheets("Rotaready-PayrollExport").Range("A1").CurrentRegion.SpecialCells(xlCellTypeVisible).Copy
+Dim sheet As Worksheet
+Set sheet = ActiveWorkbook.Sheets.Add(After:=ActiveWorkbook.Worksheets(ActiveWorkbook.Worksheets.Count))
+sheet.Name = "SUNDAY"
+Sheets("SUNDAY").Paste
+Worksheets("SUNDAY").Activate
+
+
+Columns(6).Insert
+i = 2
+Do While Cells(i, 3) <> ""
+Cells(i, 6) = Cells(i, 4) & " " & Cells(i, 5)
+i = i + 1
+Loop
+Range("C2").Select
+Range(Selection, Selection.End(xlDown)).Copy
+
+For Each wx In Application.Workbooks
+If wx.Name Like wxName & "*" Then
+wx.Activate
+End If
+Next
+Range("A1").End(xlDown).Select
+ActiveCell.Offset(1, 0).Select
+ActiveCell.PasteSpecial xlPasteValues
+
+
+For Each wb In Application.Workbooks
+If wb.Name Like wbName & "*" Then
+wb.Activate
+End If
+Next
+
+Range("F2").Select
+Range(Selection, Selection.End(xlDown)).Copy
+
+For Each wx In Application.Workbooks
+If wx.Name Like wxName & "*" Then
+wx.Activate
+End If
+Next
+Range("B1").End(xlDown).Select
+ActiveCell.Offset(1, 0).Select
+ActiveCell.PasteSpecial xlPasteValues
+
+
+For Each wb In Application.Workbooks
+If wb.Name Like wbName & "*" Then
+wb.Activate
+End If
+Next
+
+Range("N2").Select
+Range(Selection, Selection.End(xlDown)).Copy
+
+For Each wx In Application.Workbooks
+If wx.Name Like wxName & "*" Then
+wx.Activate
+End If
+Next
+Range("E1").End(xlDown).Select
+ActiveCell.Offset(1, 0).Select
+ActiveCell.PasteSpecial xlPasteValues
+
+For Each wb In Application.Workbooks
+If wb.Name Like wbName & "*" Then
+wb.Activate
+End If
+Next
+
+Range("O2").Select
+Range(Selection, Selection.End(xlDown)).Copy
+
+For Each wx In Application.Workbooks
+If wx.Name Like wxName & "*" Then
+wx.Activate
+End If
+Next
+Range("I1").End(xlDown).Select
+ActiveCell.Offset(1, 0).Select
+ActiveCell.PasteSpecial xlPasteFormulasAndNumberFormats
+Call holiday
+End Sub
+
+Sub holiday()
+    Dim wsSource As Worksheet
+    Dim wsTarget As Worksheet
+    Dim lastRow As Long
+    Dim i As Long
+    Dim targetRow As Long
+    Dim wb As Workbook
+    Dim wx As Workbook
+    Dim wbName As String
+    Dim rng15 As Range
+    Dim startCell As Range
+    Dim cell As Range
+    Dim wxName As String
+    
+    
+    
+    wxName = "Import"
+
+    
+    wbName = "Rota"
+    For Each wb In Application.Workbooks
+If wb.Name Like wbName & "*" Then
+wb.Activate
+End If
+Next
+
+Range("A1:Y600").AutoFilter field:=13
+    ' Set the source worksheet
+    Set wsSource = Sheets("Rotaready-PayrollExport") ' Change "Sheet1" to your source sheet name
+    
+    ' Add a new worksheet for the results
+    Set wsTarget = ActiveWorkbook.Sheets.Add(After:=ActiveWorkbook.Worksheets(ActiveWorkbook.Worksheets.Count))
+    wsTarget.Name = "holiday" ' Name the new sheet
+    
+    ' Set headers in the target sheet
+    wsTarget.Cells(1, 1).Value = "C"
+    wsTarget.Cells(1, 2).Value = "D"
+    wsTarget.Cells(1, 3).Value = "E"
+    wsTarget.Cells(1, 4).Value = "M"
+    wsTarget.Cells(1, 5).Value = "R"
+    
+    ' Find the last row in the source sheet
+    lastRow = wsSource.Cells(wsSource.Rows.Count, "R").End(xlUp).row
+    
+    ' Initialize the target row
+    targetRow = 2
+    
+    ' Loop through each row in the source sheet
+    For i = 1 To lastRow
+        ' Check if the value in column R is greater than 0
+        If wsSource.Cells(i, "R").Value > 0 Then
+            ' Copy values from columns C, D, E, M, and R to the new sheet
+            wsTarget.Cells(targetRow, 1).Value = wsSource.Cells(i, "C").Value
+            
+            wsTarget.Cells(targetRow, 2).Value = wsSource.Cells(i, "D").Value
+            wsTarget.Cells(targetRow, 3).Value = wsSource.Cells(i, "E").Value
+            wsTarget.Cells(targetRow, 4).Value = wsSource.Cells(i, "M").Value
+            wsTarget.Cells(targetRow, 5).Value = wsSource.Cells(i, "R").Value
+            wsTarget.Cells(targetRow, 5).NumberFormat = wsSource.Cells(i, "R").NumberFormat
+            ' Increment the target row
+            targetRow = targetRow + 1
+        End If
+    Next i
+    
+    
+    Set startCell = ActiveSheet.Range("D3")
+    Set rng15 = ActiveSheet.Range(startCell, ActiveSheet.Cells(ActiveSheet.Rows.Count, startCell.Column).End(xlUp))
+    For Each cell In rng15
+        If Not IsEmpty(cell.Value) Then
+            cell.Value = "holiday"
+        End If
+    Next cell
+    
+       Columns(6).Insert
+i = 2
+Do While Cells(i, 3) <> ""
+Cells(i, 6) = Cells(i, 2) & " " & Cells(i, 3)
+i = i + 1
+Loop
+
+
+Range("A3").Select
+Range(Selection, Selection.End(xlDown)).Copy
+For Each wx In Application.Workbooks
+If wx.Name Like wxName & "*" Then
+wx.Activate
+End If
+Next
+Range("A1").End(xlDown).Select
+ActiveCell.Offset(1, 0).Select
+ActiveCell.PasteSpecial xlPasteFormulasAndNumberFormats
+
+For Each wb In Application.Workbooks
+If wb.Name Like wbName & "*" Then
+wb.Activate
+End If
+Next
+
+Range("F3").Select
+Range(Selection, Selection.End(xlDown)).Copy
+
+For Each wx In Application.Workbooks
+If wx.Name Like wxName & "*" Then
+wx.Activate
+End If
+Next
+Range("B1").End(xlDown).Select
+ActiveCell.Offset(1, 0).Select
+ActiveCell.PasteSpecial xlPasteFormulasAndNumberFormats
+
+
+For Each wb In Application.Workbooks
+If wb.Name Like wbName & "*" Then
+wb.Activate
+End If
+Next
+
+Range("E3").Select
+Range(Selection, Selection.End(xlDown)).Copy
+
+For Each wx In Application.Workbooks
+If wx.Name Like wxName & "*" Then
+wx.Activate
+End If
+Next
+Range("I1").End(xlDown).Select
+ActiveCell.Offset(1, 0).Select
+ActiveCell.PasteSpecial xlPasteFormulasAndNumberFormats
+
+For Each wb In Application.Workbooks
+If wb.Name Like wbName & "*" Then
+wb.Activate
+End If
+Next
+
+Range("D3").Select
+Range(Selection, Selection.End(xlDown)).Copy
+
+For Each wx In Application.Workbooks
+If wx.Name Like wxName & "*" Then
+wx.Activate
+End If
+Next
+Range("E1").End(xlDown).Select
+ActiveCell.Offset(1, 0).Select
+ActiveCell.PasteSpecial xlPasteFormulasAndNumberFormats
+    Call changename
+End Sub
+
+Sub changename()
+    Dim ws As Worksheet
+    Dim cell As Range
+    Dim lastRow As Long
+    Dim wx As Workbook
+    Dim wxName As String
+    
+    
+    For Each wb In Application.Workbooks
+If wb.Name Like wbName & "*" Then
+wb.Activate
+End If
+Next
+           wxName = "Import"
+        For Each wx In Application.Workbooks
+    If wx.Name Like wxName & "*" Then
+    wx.Activate
+    End If
+    Next
+    ' Set the worksheet you want to work with
+    Set ws = ActiveSheet ' Change "Sheet1" to your sheet name
+    
+    ' Find the last row in column E
+    lastRow = ws.Cells(ws.Rows.Count, "E").End(xlUp).row
+    
+    ' Loop through each cell in column E
+    For Each cell In ws.Range("E2:E" & lastRow) ' Assuming the data starts from row 2
+        ' Check the cell value and change it accordingly
+        If cell.Value = "Basic pay" Then
+            cell.Value = "Basic"
+        ElseIf cell.Value = "Sunday rate (1.5x)" Then
+            cell.Value = "Basic"
+        End If
+    Next cell
+    Call payperiod
+End Sub
+
+
+Sub payperiod()
+Dim ws As Worksheet
+    Dim cell As Range
+    Dim lastRow As Long
+    Dim currentMonth As String
+    Dim wx As Workbook
+    Dim wxName As String
+    
+    
+    For Each wb In Application.Workbooks
+If wb.Name Like wbName & "*" Then
+wb.Activate
+End If
+Next
+           wxName = "Import"
+        For Each wx In Application.Workbooks
+    If wx.Name Like wxName & "*" Then
+    wx.Activate
+    End If
+    Next
+    ' Set the worksheet you want to work with
+    Set ws = ActiveSheet ' Change "Sheet1" to your sheet name
+    
+    ' Get the current month as a string
+    currentMonth = Format(Date, "mmmm")
+    
+    ' Find the last row in column A
+    lastRow = ws.Cells(ws.Rows.Count, "A").End(xlUp).row
+    
+    ' Loop through each cell in column A
+    For Each cell In ws.Range("A2:A" & lastRow) ' Change the range as needed, assuming data starts from row 1
+        ' Check if the cell in column A is filled
+        If Not IsEmpty(cell.Value) Then
+            ' Enter the current month in the corresponding cell in column D
+            ws.Cells(cell.row, "D").Value = currentMonth
+        End If
+    Next cell
+    Call payfrequency
+End Sub
+
+Sub payfrequency()
+    Dim ws As Worksheet
+    Dim cell As Range
+    Dim lastRow As Long
+    Dim currentMonth As String
+    Dim wx As Workbook
+    Dim wxName As String
+    
+  For Each wb In Application.Workbooks
+If wb.Name Like wbName & "*" Then
+wb.Activate
+End If
+Next
+           wxName = "Import"
+        For Each wx In Application.Workbooks
+    If wx.Name Like wxName & "*" Then
+    wx.Activate
+    End If
+    Next
+    
+    Set ws = ActiveSheet ' Change "Sheet1" to your sheet name
+    
+    ' Get the current month as a string
+    currentMonth = ("Monthly")
+    
+    ' Find the last row in column A
+    lastRow = ws.Cells(ws.Rows.Count, "A").End(xlUp).row
+    
+    ' Loop through each cell in column A
+    For Each cell In ws.Range("A2:A" & lastRow) ' Change the range as needed, assuming data starts from row 1
+        ' Check if the cell in column A is filled
+        If Not IsEmpty(cell.Value) Then
+            ' Enter the current month in the corresponding cell in column D
+            ws.Cells(cell.row, "C").Value = currentMonth
+        End If
+    Next cell
+    
+Call addtime
+End Sub
+
+Sub addtime()
+Application.ScreenUpdating = False
+  Dim ws As Worksheet
+    Dim cell As Range
+    Dim lastRow As Long
+    Dim currentMonth As String
+    Dim wx As Workbook
+    Dim wxName As String
+    Dim WWNAME As String
+    Dim rng As Range
+    Dim sortedValue As String
+    Dim cellValue As String
+   Dim rng1 As Range
+    
+    
+    
+    Set wsTarget = ActiveWorkbook.Sheets.Add(After:=ActiveWorkbook.Worksheets(ActiveWorkbook.Worksheets.Count))
+    wsTarget.Name = "Import Employee Time Keeping"
+    
+    Worksheets("Import Employee Time Keeping Re").Activate
+    Range("a1:i1").Copy
+    Worksheets("Import Employee Time Keeping").Activate
+    Range("a1").PasteSpecial xlPasteValues
+    Range("a2").PasteSpecial xlPasteValues
+    Application.CutCopyMode = False
+wxName = "Import"
+        For Each wx In Application.Workbooks
+    If wx.Name Like wxName & "*" Then
+    wx.Activate
+    End If
+    Next
+  Worksheets("Import Employee Time Keeping Re").Activate
+Range("A1:I600").AutoFilter field:=5, Criteria1:="Basic"
+Set rng = ActiveSheet.Range("A2:A" & ActiveSheet.Cells(ActiveSheet.Rows.Count, "A").End(xlUp).row)
+Set rng1 = ActiveSheet.Range("I2:I500")
+For Each cell In rng
+        cellValue = cell.Value
+        
+        Range("A1:I600").AutoFilter field:=1, Criteria1:=cellValue
+        Range("N170") = WorksheetFunction.Sum(rng1.SpecialCells(xlCellTypeVisible))
+        Range("A1").End(xlDown).Select
+        ActiveCell.Copy
+        Worksheets("Import Employee Time Keeping").Activate
+        Range("A1").End(xlDown).Offset(1, 0).Select
+        ActiveCell.PasteSpecial xlPasteValues
+        Worksheets("Import Employee Time Keeping Re").Activate
+         Range("B1").End(xlDown).Select
+         ActiveCell.Copy
+        Worksheets("Import Employee Time Keeping").Activate
+        Range("B1").End(xlDown).Offset(1, 0).Select
+        ActiveCell.PasteSpecial xlPasteValues
+        
+        Worksheets("Import Employee Time Keeping Re").Activate
+         Range("C1").End(xlDown).Select
+         ActiveCell.Copy
+        Worksheets("Import Employee Time Keeping").Activate
+        Range("C1").End(xlDown).Offset(1, 0).Select
+        ActiveCell.PasteSpecial xlPasteValues
+        
+        Worksheets("Import Employee Time Keeping Re").Activate
+         Range("D1").End(xlDown).Select
+         ActiveCell.Copy
+        Worksheets("Import Employee Time Keeping").Activate
+        Range("D1").End(xlDown).Offset(1, 0).Select
+        ActiveCell.PasteSpecial xlPasteValues
+                
+        Worksheets("Import Employee Time Keeping Re").Activate
+         Range("E1").End(xlDown).Select
+         ActiveCell.Copy
+        Worksheets("Import Employee Time Keeping").Activate
+        Range("E1").End(xlDown).Offset(1, 0).Select
+        ActiveCell.PasteSpecial xlPasteValues
+        
+        Worksheets("Import Employee Time Keeping Re").Activate
+        Range("N170").Copy
+         Worksheets("Import Employee Time Keeping").Activate
+        Range("I1").End(xlDown).Offset(1, 0).Select
+        ActiveCell.PasteSpecial xlPasteValues
+        Application.CutCopyMode = False
+        Worksheets("Import Employee Time Keeping Re").Activate
+    Next cell
+    Range("A1:Y600").AutoFilter field:=1
+    Range("A1:Y600").AutoFilter field:=5, Criteria1:="Basic"
+ActiveSheet.Range("A1").CurrentRegion.SpecialCells(xlCellTypeVisible).DELETE
+
+ActiveSheet.Range("A1:I50").Copy
+Worksheets("Import Employee Time Keeping").Activate
+
+        Range("A1").End(xlDown).Offset(1, 0).Select
+        ActiveCell.PasteSpecial xlPasteValues
+        Rows(1).DELETE
+        Worksheets("Import Employee Time Keeping Re").Activate
+        ActiveSheet.DELETE
+    Application.CutCopyMode = False
+    Application.ScreenUpdating = True
+    Call calculatetime
+End Sub
+Sub calculatetime()
+Worksheets("Import Employee Time Keeping").Activate
+Set Workrng = Range("I2", Range("I2").End(xlDown))
+For Each rng1 In Workrng
+If IsNumeric(rng1.Value) And rng1.Value <> Int(rng1.Value) Then
+xvalue = rng1.Value
+xhours = VBA.Split(xvalue, ".")(0)
+xmin = VBA.Split(xvalue, ".")(1) * 60
+rng1.Value = xhours & ":" & VBA.Left(xmin, 2)
+Else
+End If
+Next
+
+Set Workrng = Range("I2", Range("I2").End(xlDown))
+For Each rng1 In Workrng
+ On Error Resume Next
+ If IsNumeric(rng1.Value) And rng1.Value = Int(rng1.Value) Then
+
+            xvalue = rng1.Value
+xhours = VBA.Split(xvalue, "")(0)
+rng1.Value = xhours & ":" & "00"
+Else
+End If
+Next
+Call DELETE
+End Sub
+Sub DELETE()
+Dim ws As Worksheet
+    Dim rng As Range
+    Dim row As Long
+    Dim col As Long
+    Dim lastRow As Long
+    Dim lastCol As Long
+    Dim dict As Object
+Worksheets("Import Employee Time Keeping").Activate
+    ' Set the worksheet you want to work on
+    
+
+    ' Find the last row and column in the worksheet
+    lastRow = ActiveSheet.Cells(ActiveSheet.Rows.Count, 1).End(xlUp).row
+    lastCol = ActiveSheet.Cells(1, ActiveSheet.Columns.Count).End(xlToLeft).Column
+
+    ' Create a dictionary to store unique row values
+    Set dict = CreateObject("Scripting.Dictionary")
+    dict.CompareMode = vbTextCompare
+
+    ' Loop through each row
+    For row = lastRow To 1 Step -1
+        Dim key As String
+        key = ""
+
+        ' Create a unique key for the row by concatenating all column values
+        For col = 1 To lastCol
+            key = key & ActiveSheet.Cells(row, col).Value & Chr(0) ' Chr(0) is used as a delimiter
+        Next col
+
+        ' Check if the key already exists in the dictionary
+        If dict.exists(key) Then
+            ' If the key exists, delete the row
+            ActiveSheet.Rows(row).DELETE
+        Else
+            ' If the key does not exist, add it to the dictionary
+            dict.Add key, Nothing
+        End If
+    Next row
+End Sub
+
+
+
